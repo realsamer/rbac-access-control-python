@@ -1,4 +1,3 @@
-
 roles = {
     "Admin": ["Create", "View", "Update", "Delete"],
     "Manager": ["View", "Update"],
@@ -7,35 +6,84 @@ roles = {
 
 users = {}
 
-print("RBAC Roles and Permissions")
-print("--------------------------")
 
-for role, permissions in roles.items():
-    print(role + ": " + ", ".join(permissions))
+def assign_role():
+    username = input("Enter username: ").strip()
 
-print("\nAssign Roles to Users")
-print("---------------------")
-
-while True:
-    username = input("\nEnter username (or 'done' to finish): ").strip()
-
-    if username.lower() == "done":
-        break
-
-    if username == "":
+    if not username:
         print("Username cannot be empty.")
-        continue
+        return
 
     role = input("Enter role (Admin, Manager, Customer): ").strip().capitalize()
 
-    if role in roles:
-        users[username] = role
-        print("Role assigned successfully.")
-    else:
+    if role not in roles:
         print("Invalid role.")
+        return
 
-print("\nUsers and Their Roles")
-print("---------------------")
+    users[username] = role
+    print("Role assigned successfully.")
 
-for username, role in users.items():
-    print(username + ": " + role)
+
+def check_access():
+    username = input("Enter username: ").strip()
+
+    if username not in users:
+        print("User not found.")
+        return
+
+    action = input("Enter action (Create, View, Update, Delete): ").strip().capitalize()
+
+    if action not in ["Create", "View", "Update", "Delete"]:
+        print("Invalid action.")
+        return
+
+    role = users[username]
+
+    if action in roles[role]:
+        print("Access allowed: " + username + " can " + action.lower() + " accounts.")
+    else:
+        print("Access denied: " + username + " cannot " + action.lower() + " accounts.")
+
+
+def show_permissions():
+    print("\nRoles and Permissions")
+
+    for role, permissions in roles.items():
+        print(role + ": " + ", ".join(permissions))
+
+
+def show_users():
+    print("\nUsers and Their Roles")
+
+    if not users:
+        print("No users assigned.")
+        return
+
+    for username, role in users.items():
+        print(username + ": " + role)
+
+
+while True:
+    print("\nRBAC Access Control System")
+    print("--------------------------")
+    print("1. Assign role to user")
+    print("2. Check account access")
+    print("3. Show role permissions")
+    print("4. Show users")
+    print("5. Exit")
+
+    choice = input("Choose an option: ").strip()
+
+    if choice == "1":
+        assign_role()
+    elif choice == "2":
+        check_access()
+    elif choice == "3":
+        show_permissions()
+    elif choice == "4":
+        show_users()
+    elif choice == "5":
+        print("Goodbye!")
+        break
+    else:
+        print("Invalid option.")
